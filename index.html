@@ -93,6 +93,20 @@
             color: #795548;
             display: none;
         }
+
+        #photos-container {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #photos-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
@@ -115,13 +129,26 @@
     </div>
 </div>
 
+<div id="photos-container"></div>
+
 <script>
     const container = document.querySelector('.container');
     const spawnBtn = document.getElementById('spawnFlowers');
     const vase = document.getElementById('vase');
     const message = document.getElementById('message');
+    const photosContainer = document.getElementById('photos-container');
 
     let flowerCount = 0;
+
+    // Liste d'URLs d'images (remplace par tes propres URLs)
+    const photoUrls = [
+        "https://source.unsplash.com/random/100x100/?flower",
+        "https://source.unsplash.com/random/100x100/?rose",
+        "https://source.unsplash.com/random/100x100/?love",
+        "https://source.unsplash.com/random/100x100/?valentine",
+        "https://source.unsplash.com/random/100x100/?bouquet",
+        "https://source.unsplash.com/random/100x100/?heart"
+    ];
 
     spawnBtn.addEventListener('click', () => {
         spawnBtn.style.display = 'none';
@@ -174,6 +201,14 @@
         flower.draggable = false;
 
         vase.appendChild(flower);
+
+        // Ajouter une photo
+        if (vase.children.length <= photoUrls.length) {
+            const photoUrl = photoUrls[vase.children.length - 1];
+            const photo = document.createElement('img');
+            photo.src = photoUrl;
+            photosContainer.appendChild(photo);
+        }
 
         if (vase.children.length >= 5) {
             message.style.display = 'block';
