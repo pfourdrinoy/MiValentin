@@ -94,19 +94,28 @@
             display: none;
         }
 
-        #photos-container {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
+        #heart-container {
+            position: relative;
+            width: 300px;
+            height: 250px;
+            margin: 20px auto;
         }
 
-        #photos-container img {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
+        .heart-photo {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
         }
+
+        /* Positionnement des photos pour former un cœur */
+        #heart-photo-0 { top: 0; left: 50%; transform: translateX(-50%); }
+        #heart-photo-1 { top: 30px; left: 20%; }
+        #heart-photo-2 { top: 30px; right: 20%; }
+        #heart-photo-3 { bottom: 30px; left: 10%; }
+        #heart-photo-4 { bottom: 30px; right: 10%; }
+        #heart-photo-5 { bottom: 0; left: 50%; transform: translateX(-50%); }
     </style>
 </head>
 
@@ -129,16 +138,17 @@
     </div>
 </div>
 
-<div id="photos-container"></div>
+<div id="heart-container"></div>
 
 <script>
     const container = document.querySelector('.container');
     const spawnBtn = document.getElementById('spawnFlowers');
     const vase = document.getElementById('vase');
     const message = document.getElementById('message');
-    const photosContainer = document.getElementById('photos-container');
+    const heartContainer = document.getElementById('heart-container');
 
     let flowerCount = 0;
+    let photoCount = 0;
 
     // Liste d'URLs d'images (remplace par tes propres URLs)
     const photoUrls = [
@@ -202,12 +212,15 @@
 
         vase.appendChild(flower);
 
-        // Ajouter une photo
-        if (vase.children.length <= photoUrls.length) {
-            const photoUrl = photoUrls[vase.children.length - 1];
+        // Ajouter une photo en forme de cœur
+        if (photoCount < photoUrls.length) {
+            const photoUrl = photoUrls[photoCount];
             const photo = document.createElement('img');
             photo.src = photoUrl;
-            photosContainer.appendChild(photo);
+            photo.className = 'heart-photo';
+            photo.id = 'heart-photo-' + photoCount;
+            heartContainer.appendChild(photo);
+            photoCount++;
         }
 
         if (vase.children.length >= 5) {
