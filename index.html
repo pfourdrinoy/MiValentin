@@ -7,7 +7,7 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #fce4ec;
             display: flex;
             justify-content: center;
@@ -22,17 +22,16 @@
             position: relative;
             width: 100%;
             max-width: 600px;
-            height: 520px;
+            height: 500px;
         }
 
         h1 {
             color: #c2185b;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
         p {
             color: #795548;
-            margin-bottom: 10px;
         }
 
         button {
@@ -43,7 +42,7 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .vase {
@@ -89,21 +88,17 @@
         }
 
         .message {
-            margin-top: 10px;
+            margin-top: 20px;
             font-style: italic;
             color: #795548;
             display: none;
         }
 
-        /* 💖 Cœur */
         #heart-container {
-            position: absolute;
-            top: 90px;
-            left: 50%;
-            transform: translateX(-50%);
+            position: relative;
             width: 300px;
             height: 250px;
-            pointer-events: none;
+            margin: 20px auto;
         }
 
         .heart-photo {
@@ -112,9 +107,9 @@
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
+        /* Positionnement des photos pour former un cœur */
         #heart-photo-0 { top: 0; left: 50%; transform: translateX(-50%); }
         #heart-photo-1 { top: 30px; left: 20%; }
         #heart-photo-2 { top: 30px; right: 20%; }
@@ -125,14 +120,11 @@
 </head>
 
 <body>
-
 <div class="container">
     <h1>Ton Bouquet de Saint-Valentin</h1>
     <p>Attrape les fleurs et mets-les dans le vase 💐</p>
 
     <button id="spawnFlowers">🌸 Faire apparaître les fleurs</button>
-
-    <div id="heart-container"></div>
 
     <div class="vase"
          id="vase"
@@ -146,6 +138,8 @@
     </div>
 </div>
 
+<div id="heart-container"></div>
+
 <script>
     const container = document.querySelector('.container');
     const spawnBtn = document.getElementById('spawnFlowers');
@@ -156,9 +150,9 @@
     let flowerCount = 0;
     let photoCount = 0;
 
-    // 📸 PHOTOS À LA RACINE DU REPO
+    // Chemins relatifs vers tes images (à la racine du dépôt)
     const photoUrls = [
-        "photo1.jpg",
+        "photo1.jpg",  // Remplace par le nom exact de tes images
         "photo2.jpg",
         "photo3.jpg",
         "photo4.jpg",
@@ -166,9 +160,30 @@
         "photo6.jpg"
     ];
 
+    // Fonction pour tester si une image est accessible
+    function testImage(url) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
+        });
+    }
+
+    // Teste toutes les images au chargement de la page
+    window.onload = async () => {
+        for (let url of photoUrls) {
+            const isAccessible = await testImage(url);
+            console.log(`Image ${url} est accessible : ${isAccessible}`);
+        }
+    };
+
     spawnBtn.addEventListener('click', () => {
         spawnBtn.style.display = 'none';
-        for (let i = 0; i < 6; i++) createFlower();
+
+        for (let i = 0; i < 6; i++) {
+            createFlower();
+        }
     });
 
     function createFlower() {
@@ -178,7 +193,7 @@
         flower.id = 'flower-' + flowerCount++;
 
         flower.style.left = Math.random() * 80 + '%';
-        flower.style.top = Math.random() * 180 + 130 + 'px';
+        flower.style.top = Math.random() * 200 + 100 + 'px';
 
         const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b'];
         const color = colors[Math.floor(Math.random() * colors.length)];
@@ -207,5 +222,29 @@
         const id = event.dataTransfer.getData('id');
         const flower = document.getElementById(id);
 
+        flower.style.position = 'absolute';
         flower.style.left = '50%';
         flower.style.top = '40px';
+        flower.style.transform = 'translateX(-50%) scale(0.8)';
+        flower.draggable = false;
+
+        vase.appendChild(flower);
+
+        // Ajouter une photo en forme de cœur
+        if (photoCount < photoUrls.length) {
+            const photoUrl = photoUrls[photoCount];
+            const photo = document.createElement('img');
+            photo.src = photoUrl;
+            photo.className = 'heart-photo';
+            photo.id = 'heart-photo-' + photoCount;
+            heartContainer.appendChild(photo);
+            photoCount++;
+        }
+
+        if (vase.children.length >= 5) {
+            message.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>
