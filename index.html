@@ -7,18 +7,19 @@
 <!-- Police calligraphie Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
-    body {
+       body {
         font-family: 'Arial', sans-serif;
         background-color: #fce4ec;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start; /* pas centré verticalement */
         align-items: center;
         min-height: 100vh;
         margin: 0;
         text-align: center;
-        overflow: hidden;
+        overflow-y: auto; /* scroll vertical activé */
         position: relative;
+        padding-bottom: 200px; /* espace pour descendre en bas */
     }
 
     h1 {
@@ -39,7 +40,7 @@
         border-radius: 25px;
         cursor: pointer;
         font-size: 16px;
-        margin-bottom: 90px;
+        margin-bottom: 120px;
     }
 
     .vase {
@@ -48,7 +49,7 @@
         height: 110px;
         background-color: #8e44ad;
         border-radius: 10px 10px 50% 50%;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
         overflow: visible;
     }
 
@@ -108,7 +109,7 @@
 
     .montage-photo:nth-child(1) { transform: rotate(-5deg); }
     .montage-photo:nth-child(2) { transform: rotate(3deg); }
-    .montage-photo:nth-child(3) { transform: rotate(-2deg); }
+    .montage-photo:nth-child(3) { transform: rotate(-4deg); }
     .montage-photo:nth-child(4) { transform: rotate(5deg); }
     .montage-photo:nth-child(5) { transform: rotate(-3deg); }
     .montage-photo:nth-child(6) { transform: rotate(2deg); }
@@ -126,6 +127,16 @@
         0% { transform: translateY(0) rotate(0deg); opacity: 1; }
         100% { transform: translateY(var(--fall-height)) rotate(720deg); opacity: 0; }
     }
+
+    /* Message joyeux sous les photos */
+    #valentine-message {
+        font-family: 'Great Vibes', cursive;
+        font-size: 36px;
+        color: #e91e63;
+        margin-top: 20px;
+        display: none;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
 </style>
 </head>
 <body>
@@ -134,11 +145,13 @@
 <button id="addFlower">💐 Ajoute une fleur</button>
 <div class="vase" id="vase"></div>
 <div id="photo-montage"></div>
+<div id="valentine-message">Joyeuse Saint-Valentin mon amour 💖</div>
 
 <script>
 const vase = document.getElementById('vase');
 const button = document.getElementById('addFlower');
 const photoMontage = document.getElementById('photo-montage');
+const message = document.getElementById('valentine-message');
 
 let flowerCount = 0;
 let photoCount = 0;
@@ -183,8 +196,11 @@ button.addEventListener('click', () => {
         photoCount++;
     }
 
-    // Confettis sur toute la page à la dernière fleur
-    if(flowerCount === maxFlowers) spawnConfetti();
+    // Confettis + afficher message à la dernière fleur
+    if(flowerCount === maxFlowers) {
+        spawnConfetti();
+        message.style.display = 'block';
+    }
 });
 
 // Fonction pour générer les confettis sur toute la page
