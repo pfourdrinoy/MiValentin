@@ -10,6 +10,7 @@
             font-family: 'Arial', sans-serif;
             background-color: #fce4ec;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -23,6 +24,7 @@
             width: 100%;
             max-width: 600px;
             height: 500px;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -103,19 +105,40 @@
 
         .heart-photo {
             position: absolute;
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #ff4081;
         }
 
-        /* Positionnement des photos pour former un cœur */
-        #heart-photo-0 { top: 0; left: 50%; transform: translateX(-50%); }
-        #heart-photo-1 { top: 30px; left: 20%; }
-        #heart-photo-2 { top: 30px; right: 20%; }
-        #heart-photo-3 { bottom: 30px; left: 10%; }
-        #heart-photo-4 { bottom: 30px; right: 10%; }
-        #heart-photo-5 { bottom: 0; left: 50%; transform: translateX(-50%); }
+        /* Positionnement précis des photos pour former un cœur */
+        #heart-photo-0 {
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #heart-photo-1 {
+            top: 20%;
+            left: 30%;
+        }
+        #heart-photo-2 {
+            top: 20%;
+            right: 30%;
+        }
+        #heart-photo-3 {
+            bottom: 30%;
+            left: 20%;
+        }
+        #heart-photo-4 {
+            bottom: 30%;
+            right: 20%;
+        }
+        #heart-photo-5 {
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     </style>
 </head>
 
@@ -159,24 +182,6 @@
         "photos5.jpg",
         "photos6.jpg"
     ];
-
-    // Fonction pour tester si une image est accessible
-    function testImage(url) {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve(true);
-            img.onerror = () => resolve(false);
-            img.src = url;
-        });
-    }
-
-    // Teste toutes les images au chargement de la page
-    window.onload = async () => {
-        for (let url of photoUrls) {
-            const isAccessible = await testImage(url);
-            console.log(`Image ${url} est accessible : ${isAccessible}`);
-        }
-    };
 
     spawnBtn.addEventListener('click', () => {
         spawnBtn.style.display = 'none';
