@@ -42,7 +42,7 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .vase {
@@ -88,17 +88,21 @@
         }
 
         .message {
-            margin-top: 20px;
+            margin-top: 10px;
             font-style: italic;
             color: #795548;
             display: none;
         }
 
+        /* 💖 Cœur */
         #heart-container {
-            position: relative;
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 300px;
             height: 250px;
-            margin: 20px auto;
+            pointer-events: none;
         }
 
         .heart-photo {
@@ -107,24 +111,28 @@
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* Positionnement des photos pour former un cœur */
         #heart-photo-0 { top: 0; left: 50%; transform: translateX(-50%); }
         #heart-photo-1 { top: 30px; left: 20%; }
         #heart-photo-2 { top: 30px; right: 20%; }
         #heart-photo-3 { bottom: 30px; left: 10%; }
         #heart-photo-4 { bottom: 30px; right: 10%; }
         #heart-photo-5 { bottom: 0; left: 50%; transform: translateX(-50%); }
+
     </style>
 </head>
 
 <body>
+
 <div class="container">
     <h1>Ton Bouquet de Saint-Valentin</h1>
     <p>Attrape les fleurs et mets-les dans le vase 💐</p>
 
     <button id="spawnFlowers">🌸 Faire apparaître les fleurs</button>
+
+    <div id="heart-container"></div>
 
     <div class="vase"
          id="vase"
@@ -138,8 +146,6 @@
     </div>
 </div>
 
-<div id="heart-container"></div>
-
 <script>
     const container = document.querySelector('.container');
     const spawnBtn = document.getElementById('spawnFlowers');
@@ -150,7 +156,6 @@
     let flowerCount = 0;
     let photoCount = 0;
 
-    // Remplace ces URLs par celles de tes images GitHub
     const photoUrls = [
         "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo1.jpg",
         "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo2.jpg",
@@ -162,10 +167,7 @@
 
     spawnBtn.addEventListener('click', () => {
         spawnBtn.style.display = 'none';
-
-        for (let i = 0; i < 6; i++) {
-            createFlower();
-        }
+        for (let i = 0; i < 6; i++) createFlower();
     });
 
     function createFlower() {
@@ -175,7 +177,7 @@
         flower.id = 'flower-' + flowerCount++;
 
         flower.style.left = Math.random() * 80 + '%';
-        flower.style.top = Math.random() * 200 + 100 + 'px';
+        flower.style.top = Math.random() * 200 + 120 + 'px';
 
         const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b'];
         const color = colors[Math.floor(Math.random() * colors.length)];
@@ -204,7 +206,6 @@
         const id = event.dataTransfer.getData('id');
         const flower = document.getElementById(id);
 
-        flower.style.position = 'absolute';
         flower.style.left = '50%';
         flower.style.top = '40px';
         flower.style.transform = 'translateX(-50%) scale(0.8)';
@@ -212,11 +213,9 @@
 
         vase.appendChild(flower);
 
-        // Ajouter une photo en forme de cœur
         if (photoCount < photoUrls.length) {
-            const photoUrl = photoUrls[photoCount];
             const photo = document.createElement('img');
-            photo.src = photoUrl;
+            photo.src = photoUrls[photoCount];
             photo.className = 'heart-photo';
             photo.id = 'heart-photo-' + photoCount;
             heartContainer.appendChild(photo);
@@ -228,5 +227,6 @@
         }
     }
 </script>
+
 </body>
 </html>
