@@ -2,143 +2,65 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ton Bouquet de Saint-Valentin</title>
+    <title>Vase à fleurs</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #fce4ec;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            font-family: Arial, sans-serif;
             text-align: center;
+            background-color: #f7f7f7;
         }
-        .container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
+
+        #vase {
+            width: 200px;
+            height: 300px;
+            margin: 40px auto;
+            border: 4px solid #555;
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            background-color: #e0f7fa;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-end;
+            padding: 10px;
         }
-        h1 {
-            color: #c2185b;
-            margin-bottom: 20px;
+
+        .fleur {
+            font-size: 30px;
+            margin: 5px;
         }
+
         button {
-            background-color: #c2185b;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
+            padding: 12px 20px;
             font-size: 16px;
-            margin-bottom: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            background-color: #ff8a80;
+            color: white;
         }
-        .vase {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 150px;
-            background-color: #8e44ad;
-            border-radius: 10px 10px 50% 50%;
-            z-index: 10;
-        }
-        .flower {
-            position: absolute;
-            width: 60px;
-            height: 80px;
-            bottom: 130px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none;
-        }
-        .stem {
-            position: absolute;
-            width: 2px;
-            height: 100px;
-            background-color: #2ecc71;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .petals {
-            position: absolute;
-            width: 60px;
-            height: 40px;
-            background-color: #e91e63;
-            border-radius: 50% 50% 0 0;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .message {
-            margin-top: 20px;
-            font-style: italic;
-            color: #795548;
-            display: none;
+
+        button:hover {
+            background-color: #ff5252;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Ton Bouquet de Saint-Valentin</h1>
-        <p>Clique pour faire pousser les fleurs !</p>
-        <button id="growButton">🌸 Faire pousser le bouquet</button>
-        <div class="vase"></div>
-        <div class="message" id="message">
-            Joyeuse Saint-Valentin, [Son Prénom] !<br>
-            Chaque fleur représente un moment précieux passé avec toi. 💖
-        </div>
-    </div>
+
+    <h1>🌼 Ajouter des fleurs dans le vase 🌼</h1>
+
+    <div id="vase"></div>
+
+    <button onclick="ajouterFleur()">Ajouter une fleur</button>
 
     <script>
-        const growButton = document.getElementById('growButton');
-        const message = document.getElementById('message');
-        const container = document.querySelector('.container');
-
-        growButton.addEventListener('click', () => {
-            growButton.style.display = 'none';
-            message.style.display = 'block';
-
-            // Crée 10 fleurs aléatoires
-            for (let i = 0; i < 10; i++) {
-                setTimeout(() => {
-                    createFlower();
-                }, i * 300);
-            }
-        });
-
-        function createFlower() {
-            const flower = document.createElement('div');
-            flower.className = 'flower';
-
-            // Position aléatoire autour du vase
-            const leftPos = 30 + Math.random() * 60;
-            flower.style.left = `${leftPos}%`;
-
-            // Couleur aléatoire pour les pétales
-            const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            flower.innerHTML = `
-                <div class="stem"></div>
-                <div class="petals" style="background-color: ${randomColor};"></div>
-            `;
-
-            container.appendChild(flower);
-            flower.style.display = 'block';
-
-            // Animation de croissance
-            flower.animate([
-                { transform: 'translateX(-50%) translateY(0)', opacity: 0 },
-                { transform: 'translateX(-50%) translateY(-100px)', opacity: 1 }
-            ], {
-                duration: 1000,
-                fill: 'forwards'
-            });
+        function ajouterFleur() {
+            const vase = document.getElementById("vase");
+            const fleur = document.createElement("div");
+            fleur.className = "fleur";
+            fleur.textContent = "🌸";
+            vase.appendChild(fleur);
         }
     </script>
+
 </body>
 </html>
