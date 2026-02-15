@@ -12,27 +12,14 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
-        overflow: hidden;
         text-align: center;
-    }
-
-    .container {
-        position: relative;
-        width: 100%;
-        max-width: 600px;
-        height: 500px;
-        margin-bottom: 20px;
     }
 
     h1 {
         color: #c2185b;
         margin-bottom: 10px;
-    }
-
-    p {
-        color: #795548;
     }
 
     button {
@@ -43,33 +30,25 @@
         border-radius: 25px;
         cursor: pointer;
         font-size: 16px;
-        margin-bottom: 20px;
+        margin-bottom: 110px;
     }
 
     .vase {
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
+        position: relative;
+        width: 120px;
         height: 150px;
         background-color: #8e44ad;
         border-radius: 10px 10px 50% 50%;
-        z-index: 10;
-        transition: background-color 0.3s;
-    }
-
-    .vase.hover {
-        background-color: #9b59b6;
+        margin-bottom: 30px;
+        overflow: visible;
     }
 
     .flower {
         position: absolute;
-        cursor: grab;
-        z-index: 5;
+        width: 50px;
+        height: 80px;
+        transform-origin: bottom center;
         transition: all 0.5s ease;
-        width: 50px; /* largeur totale du flower */
-        height: 80px; /* hauteur de la tige */
     }
 
     .stem {
@@ -88,30 +67,21 @@
         width: 50px;
         height: 30px;
         border-radius: 50% 50% 0 0;
-        top: 0; /* pétales en haut du div flower */
+        top: 0;
         left: 50%;
         transform: translateX(-50%);
         z-index: 2;
     }
 
-    .message {
-        margin-top: 20px;
-        font-style: italic;
-        color: #795548;
-        display: none;
-    }
-
     #photo-montage {
-        position: relative;
-        width: 500px;
-        height: 400px;
-        margin: 20px auto;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
         gap: 10px;
         padding: 20px;
+        max-width: 600px;
+        margin-top: 20px;
         background-color: rgba(255, 255, 255, 0.8);
         border-radius: 15px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -124,7 +94,6 @@
         border-radius: 10px;
         border: 3px solid white;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        transform: rotate(0deg);
         transition: transform 0.3s ease;
     }
 
@@ -137,106 +106,67 @@
 </style>
 </head>
 <body>
-<div class="container">
-    <h1>Ton Bouquet de Saint-Valentin</h1>
-    <p>Attrape les fleurs et mets-les dans le vase 💐</p>
-    <button id="spawnFlowers">🌸 Faire apparaître les fleurs</button>
-    <div class="vase" id="vase" ondragover="allowDrop(event)" ondrop="dropFlower(event)"></div>
-    <div class="message" id="message">
-        Joyeuse Saint-Valentin, [Son Prénom] 💖<br>
-        Chaque fleur est un souvenir avec toi.
-    </div>
-</div>
 
+<h1>Ton Bouquet de Saint-Valentin</h1>
+<button id="addFlower">💐 Ajoute une fleur</button>
+<div class="vase" id="vase"></div>
 <div id="photo-montage"></div>
 
 <script>
-    const container = document.querySelector('.container');
-    const spawnBtn = document.getElementById('spawnFlowers');
-    const vase = document.getElementById('vase');
-    const message = document.getElementById('message');
-    const photoMontage = document.getElementById('photo-montage');
+const vase = document.getElementById('vase');
+const button = document.getElementById('addFlower');
+const photoMontage = document.getElementById('photo-montage');
 
-    let flowerCount = 0;
-    let photoCount = 0;
-    let flowersInVase = 0;
+let flowerCount = 0;
+let photoCount = 0;
+const maxFlowers = 6;
 
-    const photoUrls = [
-        "photos1.jpg",
-        "photos2.jpg",
-        "photos3.jpg",
-        "photos4.jpg",
-        "photos5.jpg",
-        "photos6.jpg"
-    ];
+const colors = ['#e91e63','#ff5252','#ff80ab','#ff4081','#c2185b','#ffeb3b','#ffc107'];
+const photoUrls = [
+    "photos1.jpg",
+    "photos2.jpg",
+    "photos3.jpg",
+    "photos4.jpg",
+    "photos5.jpg",
+    "photos6.jpg"
+];
 
-    spawnBtn.addEventListener('click', () => {
-        spawnBtn.style.display = 'none';
-        for (let i = 0; i < 6; i++) createFlower();
-    });
+button.addEventListener('click', () => {
+    if(flowerCount >= maxFlowers) return;
 
-    function createFlower() {
-        const flower = document.createElement('div');
-        flower.className = 'flower';
-        flower.draggable = true;
-        flower.id = 'flower-' + flowerCount++;
+    // Création de la fleur
+    const flower = document.createElement('div');
+    flower.className = 'flower';
 
-        // Position aléatoire initiale
-        flower.style.left = Math.random() * 80 + '%';
-        flower.style.top = Math.random() * 200 + 100 + 'px';
+    // Rotation aléatoire
+    const rotation = Math.floor(Math.random() * 91) - 45;
 
-        // Couleur aléatoire
-        const colors = ['#e91e63','#ff5252','#ff80ab','#ff4081','#c2185b','#ffeb3b','#ffc107'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
+    // Position dans le vase
+    const offsetX = (flowerCount - 2) * 4; // espace horizontal
+    flower.style.left = `calc(50% + ${offsetX}px)`;
+    flower.style.bottom = `150px`;
+    flower.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
 
-        flower.innerHTML = `
-            <div class="petals" style="background-color:${color};"></div>
-            <div class="stem"></div>
-        `;
+    // Couleur pétales
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    flower.innerHTML = `
+        <div class="petals" style="background-color:${color};"></div>
+        <div class="stem"></div>
+    `;
 
-        flower.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('id', flower.id);
-        });
+    vase.appendChild(flower);
+    flowerCount++;
 
-        container.appendChild(flower);
+    // Ajouter la photo correspondante dans le montage
+    if(photoCount < photoUrls.length) {
+        const photo = document.createElement('img');
+        photo.src = photoUrls[photoCount];
+        photo.className = 'montage-photo';
+        photoMontage.appendChild(photo);
+        photoCount++;
     }
-
-    function allowDrop(event) {
-        event.preventDefault();
-        vase.classList.add('hover');
-    }
-
-    function dropFlower(event) {
-        event.preventDefault();
-        vase.classList.remove('hover');
-
-        const id = event.dataTransfer.getData('id');
-        const flower = document.getElementById(id);
-
-        const offsetX = -30 + flowersInVase * 15;
-        const rotationAngle = Math.floor(Math.random() * 91) - 45; // -45° à 45°
-
-        flower.style.position = 'absolute';
-        flower.style.left = `calc(50% + ${offsetX}px)`;
-        flower.style.bottom = '150px'; // placer flower au-dessus du vase
-        flower.style.transform = `translateX(-50%) rotate(${rotationAngle}deg)`;
-        flower.style.zIndex = '1';
-        flower.draggable = false;
-
-        vase.appendChild(flower);
-        flowersInVase++;
-
-        if (photoCount < photoUrls.length) {
-            const photoUrl = photoUrls[photoCount];
-            const photo = document.createElement('img');
-            photo.src = photoUrl;
-            photo.className = 'montage-photo';
-            photoMontage.appendChild(photo);
-            photoCount++;
-        }
-
-        if (flowersInVase >= 5) message.style.display = 'block';
-    }
+});
 </script>
+
 </body>
 </html>
