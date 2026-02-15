@@ -75,7 +75,7 @@
             width: 3px;
             height: 80px;
             background-color: #2ecc71;
-            bottom: 0; /* Tige commence en bas */
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -86,7 +86,7 @@
             width: 50px;
             height: 30px;
             border-radius: 50% 50% 0 0;
-            bottom: 80px; /* Pétales au-dessus de la tige */
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
@@ -215,10 +215,12 @@
 
             // Position dans le vase : même hauteur, côté à côté
             const offsetX = -30 + flowersInVase * 15; // Espacement régulier
+            const rotationAngle = Math.floor(Math.random() * 91) - 45; // -45° à 45°
+            
             flower.style.position = 'absolute';
             flower.style.left = `calc(50% + ${offsetX}px)`;
-            flower.style.bottom = '120px'; // Même hauteur pour toutes
-            flower.style.transform = 'translateX(-50%)';
+            flower.style.bottom = '120px'; // Même hauteur
+            flower.style.transform = `translateX(-50%) rotate(${rotationAngle}deg)`;
             flower.style.zIndex = '1';
             flower.draggable = false;
 
