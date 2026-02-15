@@ -2,89 +2,183 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Fleur dans le vase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ton Bouquet de Saint-Valentin</title>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+            background-color: #fce4ec;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
             text-align: center;
         }
 
-        .zone {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 40px;
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 500px;
         }
 
-        .fleur {
-            font-size: 40px;
+        h1 {
+            color: #c2185b;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #795548;
+        }
+
+        button {
+            background-color: #c2185b;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .vase {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 150px;
+            background-color: #8e44ad;
+            border-radius: 10px 10px 50% 50%;
+            z-index: 10;
+        }
+
+        .vase.hover {
+            background-color: #9b59b6;
+        }
+
+        .flower {
+            position: absolute;
+            width: 60px;
+            height: 120px;
             cursor: grab;
         }
 
-        #vase {
-            width: 200px;
-            height: 300px;
-            border: 4px solid #555;
-            border-top: none;
-            border-radius: 0 0 20px 20px;
-            background-color: #dff5f7;
-            display: flex;
-            flex-wrap: wrap;
-            align-content: flex-end;
-            padding: 10px;
+        .stem {
+            position: absolute;
+            width: 3px;
+            height: 80px;
+            background-color: #2ecc71;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        #vase.hover {
-            background-color: #b2ebf2;
+        .petals {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            border-radius: 50% 50% 0 0;
+            top: 0;
+            left: 0;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-style: italic;
+            color: #795548;
+            display: none;
         }
     </style>
 </head>
+
 <body>
+<div class="container">
+    <h1>Ton Bouquet de Saint-Valentin</h1>
+    <p>Attrape les fleurs et mets-les dans le vase 💐</p>
 
-    <h1>🌼 Attrape la fleur et mets-la dans le vase 🌼</h1>
+    <button id="spawnFlowers">🌸 Faire apparaître les fleurs</button>
 
-    <div class="zone">
-        <!-- Fleur draggable -->
-        <div 
-            class="fleur" 
-            draggable="true" 
-            ondragstart="drag(event)"
-            id="fleur">
-            🌸
-        </div>
-
-        <!-- Vase -->
-        <div 
-            id="vase" 
-            ondragover="autoriserDepot(event)"
-            ondrop="deposer(event)">
-        </div>
+    <div class="vase"
+         id="vase"
+         ondragover="allowDrop(event)"
+         ondrop="dropFlower(event)">
     </div>
 
-    <script>
-        function drag(event) {
-            event.dataTransfer.setData("text", event.target.id);
+    <div class="message" id="message">
+        Joyeuse Saint-Valentin, [Son Prénom] 💖<br>
+        Chaque fleur est un souvenir avec toi.
+    </div>
+</div>
+
+<script>
+    const container = document.querySelector('.container');
+    const spawnBtn = document.getElementById('spawnFlowers');
+    const vase = document.getElementById('vase');
+    const message = document.getElementById('message');
+
+    let flowerCount = 0;
+
+    spawnBtn.addEventListener('click', () => {
+        spawnBtn.style.display = 'none';
+
+        for (let i = 0; i < 6; i++) {
+            createFlower();
         }
+    });
 
-        function autoriserDepot(event) {
-            event.preventDefault();
-            document.getElementById("vase").classList.add("hover");
+    function createFlower() {
+        const flower = document.createElement('div');
+        flower.className = 'flower';
+        flower.draggable = true;
+        flower.id = 'flower-' + flowerCount++;
+
+        flower.style.left = Math.random() * 80 + '%';
+        flower.style.top = Math.random() * 200 + 100 + 'px';
+
+        const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        flower.innerHTML = `
+            <div class="petals" style="background-color:${color}"></div>
+            <div class="stem"></div>
+        `;
+
+        flower.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('id', flower.id);
+        });
+
+        container.appendChild(flower);
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+        vase.classList.add('hover');
+    }
+
+    function dropFlower(event) {
+        event.preventDefault();
+        vase.classList.remove('hover');
+
+        const id = event.dataTransfer.getData('id');
+        const flower = document.getElementById(id);
+
+        flower.style.position = 'absolute';
+        flower.style.left = '50%';
+        flower.style.top = '40px';
+        flower.style.transform = 'translateX(-50%) scale(0.8)';
+        flower.draggable = false;
+
+        vase.appendChild(flower);
+
+        if (vase.children.length >= 5) {
+            message.style.display = 'block';
         }
-
-        function deposer(event) {
-            event.preventDefault();
-            const id = event.dataTransfer.getData("text");
-            const fleur = document.getElementById(id);
-
-            // Cloner la fleur pour pouvoir la déposer plusieurs fois
-            const nouvelleFleur = fleur.cloneNode(true);
-            nouvelleFleur.removeAttribute("id");
-            nouvelleFleur.setAttribute("draggable", "false");
-
-            event.target.appendChild(nouvelleFleur);
-            document.getElementById("vase").classList.remove("hover");
-        }
-    </script>
-
+    }
+</script>
 </body>
 </html>
