@@ -2,63 +2,87 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Vase à fleurs</title>
+    <title>Fleur dans le vase</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             text-align: center;
-            background-color: #f7f7f7;
+        }
+
+        .zone {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+        }
+
+        .fleur {
+            font-size: 40px;
+            cursor: grab;
         }
 
         #vase {
             width: 200px;
             height: 300px;
-            margin: 40px auto;
             border: 4px solid #555;
             border-top: none;
             border-radius: 0 0 20px 20px;
-            background-color: #e0f7fa;
+            background-color: #dff5f7;
             display: flex;
             flex-wrap: wrap;
             align-content: flex-end;
             padding: 10px;
         }
 
-        .fleur {
-            font-size: 30px;
-            margin: 5px;
-        }
-
-        button {
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            border: none;
-            background-color: #ff8a80;
-            color: white;
-        }
-
-        button:hover {
-            background-color: #ff5252;
+        #vase.hover {
+            background-color: #b2ebf2;
         }
     </style>
 </head>
 <body>
 
-    <h1>🌼 Ajouter des fleurs dans le vase 🌼</h1>
+    <h1>🌼 Attrape la fleur et mets-la dans le vase 🌼</h1>
 
-    <div id="vase"></div>
+    <div class="zone">
+        <!-- Fleur draggable -->
+        <div 
+            class="fleur" 
+            draggable="true" 
+            ondragstart="drag(event)"
+            id="fleur">
+            🌸
+        </div>
 
-    <button onclick="ajouterFleur()">Ajouter une fleur</button>
+        <!-- Vase -->
+        <div 
+            id="vase" 
+            ondragover="autoriserDepot(event)"
+            ondrop="deposer(event)">
+        </div>
+    </div>
 
     <script>
-        function ajouterFleur() {
-            const vase = document.getElementById("vase");
-            const fleur = document.createElement("div");
-            fleur.className = "fleur";
-            fleur.textContent = "🌸";
-            vase.appendChild(fleur);
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function autoriserDepot(event) {
+            event.preventDefault();
+            document.getElementById("vase").classList.add("hover");
+        }
+
+        function deposer(event) {
+            event.preventDefault();
+            const id = event.dataTransfer.getData("text");
+            const fleur = document.getElementById(id);
+
+            // Cloner la fleur pour pouvoir la déposer plusieurs fois
+            const nouvelleFleur = fleur.cloneNode(true);
+            nouvelleFleur.removeAttribute("id");
+            nouvelleFleur.setAttribute("draggable", "false");
+
+            event.target.appendChild(nouvelleFleur);
+            document.getElementById("vase").classList.remove("hover");
         }
     </script>
 
