@@ -96,49 +96,42 @@
             display: none;
         }
 
-        #heart-container {
+        /* Conteneur pour le montage photo */
+        #photo-montage {
             position: relative;
-            width: 300px;
-            height: 250px;
+            width: 500px;
+            height: 400px;
             margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .heart-photo {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+        /* Style des photos dans le montage */
+        .montage-photo {
+            width: 150px;
+            height: 150px;
             object-fit: cover;
-            border: 2px solid #ff4081;
+            border-radius: 10px;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: rotate(0deg);
+            transition: transform 0.3s ease;
         }
 
-        /* Positionnement précis des photos pour former un cœur */
-        #heart-photo-0 {
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        #heart-photo-1 {
-            top: 20%;
-            left: 30%;
-        }
-        #heart-photo-2 {
-            top: 20%;
-            right: 30%;
-        }
-        #heart-photo-3 {
-            bottom: 30%;
-            left: 20%;
-        }
-        #heart-photo-4 {
-            bottom: 30%;
-            right: 20%;
-        }
-        #heart-photo-5 {
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+        /* Effet de rotation légère aléatoire pour un style dynamique */
+        .montage-photo:nth-child(1) { transform: rotate(-5deg); }
+        .montage-photo:nth-child(2) { transform: rotate(3deg); }
+        .montage-photo:nth-child(3) { transform: rotate(-2deg); }
+        .montage-photo:nth-child(4) { transform: rotate(5deg); }
+        .montage-photo:nth-child(5) { transform: rotate(-3deg); }
+        .montage-photo:nth-child(6) { transform: rotate(2deg); }
     </style>
 </head>
 
@@ -161,14 +154,15 @@
     </div>
 </div>
 
-<div id="heart-container"></div>
+<!-- Conteneur pour le montage photo -->
+<div id="photo-montage"></div>
 
 <script>
     const container = document.querySelector('.container');
     const spawnBtn = document.getElementById('spawnFlowers');
     const vase = document.getElementById('vase');
     const message = document.getElementById('message');
-    const heartContainer = document.getElementById('heart-container');
+    const photoMontage = document.getElementById('photo-montage');
 
     let flowerCount = 0;
     let photoCount = 0;
@@ -235,14 +229,13 @@
 
         vase.appendChild(flower);
 
-        // Ajouter une photo en forme de cœur
+        // Ajouter une photo au montage
         if (photoCount < photoUrls.length) {
             const photoUrl = photoUrls[photoCount];
             const photo = document.createElement('img');
             photo.src = photoUrl;
-            photo.className = 'heart-photo';
-            photo.id = 'heart-photo-' + photoCount;
-            heartContainer.appendChild(photo);
+            photo.className = 'montage-photo';
+            photoMontage.appendChild(photo);
             photoCount++;
         }
 
