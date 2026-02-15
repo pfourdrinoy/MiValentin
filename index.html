@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ton Bouquet de Saint-Valentin</title>
-
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -57,6 +56,7 @@
             background-color: #8e44ad;
             border-radius: 10px 10px 50% 50%;
             z-index: 10;
+            transition: background-color 0.3s;
         }
 
         .vase.hover {
@@ -65,9 +65,9 @@
 
         .flower {
             position: absolute;
-            width: 60px;
-            height: 120px;
             cursor: grab;
+            z-index: 5;
+            transition: transform 0.3s;
         }
 
         .stem {
@@ -89,6 +89,27 @@
             left: 0;
         }
 
+        /* Types de fleurs */
+        .flower.rose .petals {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        .flower.tulip .petals {
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            width: 40px;
+            height: 60px;
+        }
+
+        .flower.daisy .petals {
+            background: radial-gradient(circle, white 0%, white 40%, transparent 40%);
+            border: 3px solid;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
         .message {
             margin-top: 20px;
             font-style: italic;
@@ -96,7 +117,6 @@
             display: none;
         }
 
-        /* Conteneur pour le montage photo */
         #photo-montage {
             position: relative;
             width: 500px;
@@ -113,7 +133,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* Style des photos dans le montage */
         .montage-photo {
             width: 150px;
             height: 150px;
@@ -125,7 +144,6 @@
             transition: transform 0.3s ease;
         }
 
-        /* Effet de rotation légère aléatoire pour un style dynamique */
         .montage-photo:nth-child(1) { transform: rotate(-5deg); }
         .montage-photo:nth-child(2) { transform: rotate(3deg); }
         .montage-photo:nth-child(3) { transform: rotate(-2deg); }
@@ -134,115 +152,126 @@
         .montage-photo:nth-child(6) { transform: rotate(2deg); }
     </style>
 </head>
-
 <body>
-<div class="container">
-    <h1>Ton Bouquet de Saint-Valentin</h1>
-    <p>Attrape les fleurs et mets-les dans le vase 💐</p>
-
-    <button id="spawnFlowers">🌸 Faire apparaître les fleurs</button>
-
-    <div class="vase"
-         id="vase"
-         ondragover="allowDrop(event)"
-         ondrop="dropFlower(event)">
+    <div class="container">
+        <h1>Ton Bouquet de Saint-Valentin</h1>
+        <p>Attrape les fleurs et mets-les dans le vase 💐</p>
+        <button id="spawnFlowers">🌸 Faire apparaître les fleurs</button>
+        <div class="vase" id="vase" ondragover="allowDrop(event)" ondrop="dropFlower(event)"></div>
+        <div class="message" id="message">
+            Joyeuse Saint-Valentin, [Son Prénom] 💖<br>
+            Chaque fleur est un souvenir avec toi.
+        </div>
     </div>
 
-    <div class="message" id="message">
-        Joyeuse Saint-Valentin, [Son Prénom] 💖<br>
-        Chaque fleur est un souvenir avec toi.
-    </div>
-</div>
+    <div id="photo-montage"></div>
 
-<!-- Conteneur pour le montage photo -->
-<div id="photo-montage"></div>
+    <script>
+        const container = document.querySelector('.container');
+        const spawnBtn = document.getElementById('spawnFlowers');
+        const vase = document.getElementById('vase');
+        const message = document.getElementById('message');
+        const photoMontage = document.getElementById('photo-montage');
 
-<script>
-    const container = document.querySelector('.container');
-    const spawnBtn = document.getElementById('spawnFlowers');
-    const vase = document.getElementById('vase');
-    const message = document.getElementById('message');
-    const photoMontage = document.getElementById('photo-montage');
+        let flowerCount = 0;
+        let photoCount = 0;
 
-    let flowerCount = 0;
-    let photoCount = 0;
+        const photoUrls = [
+            "photos1.jpg",
+            "photos2.jpg",
+            "photos3.jpg",
+            "photos4.jpg",
+            "photos5.jpg",
+            "photos6.jpg"
+        ];
 
-    // Chemins relatifs vers tes images (à la racine du dépôt)
-    const photoUrls = [
-        "photos1.jpg",  // Remplace par le nom exact de tes images
-        "photos2.jpg",
-        "photos3.jpg",
-        "photos4.jpg",
-        "photos5.jpg",
-        "photos6.jpg"
-    ];
-
-    spawnBtn.addEventListener('click', () => {
-        spawnBtn.style.display = 'none';
-
-        for (let i = 0; i < 6; i++) {
-            createFlower();
-        }
-    });
-
-    function createFlower() {
-        const flower = document.createElement('div');
-        flower.className = 'flower';
-        flower.draggable = true;
-        flower.id = 'flower-' + flowerCount++;
-
-        flower.style.left = Math.random() * 80 + '%';
-        flower.style.top = Math.random() * 200 + 100 + 'px';
-
-        const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-
-        flower.innerHTML = `
-            <div class="petals" style="background-color:${color}"></div>
-            <div class="stem"></div>
-        `;
-
-        flower.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('id', flower.id);
+        spawnBtn.addEventListener('click', () => {
+            spawnBtn.style.display = 'none';
+            for (let i = 0; i < 6; i++) {
+                createFlower();
+            }
         });
 
-        container.appendChild(flower);
-    }
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.draggable = true;
+            flower.id = 'flower-' + flowerCount++;
 
-    function allowDrop(event) {
-        event.preventDefault();
-        vase.classList.add('hover');
-    }
+            // Choisir un type de fleur aléatoire
+            const types = ['rose', 'tulip', 'daisy'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            flower.classList.add(type);
 
-    function dropFlower(event) {
-        event.preventDefault();
-        vase.classList.remove('hover');
+            // Position aléatoire
+            flower.style.left = Math.random() * 80 + '%';
+            flower.style.top = Math.random() * 200 + 100 + 'px';
 
-        const id = event.dataTransfer.getData('id');
-        const flower = document.getElementById(id);
+            // Couleur aléatoire
+            const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b', '#ffeb3b', '#ffc107'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
 
-        flower.style.position = 'absolute';
-        flower.style.left = '50%';
-        flower.style.top = '40px';
-        flower.style.transform = 'translateX(-50%) scale(0.8)';
-        flower.draggable = false;
+            // Structure de la fleur selon son type
+            if (type === 'rose') {
+                flower.innerHTML = `
+                    <div class="petals" style="background-color:${color}; border-radius: 50%; width: 50px; height: 50px;"></div>
+                    <div class="stem"></div>
+                `;
+            } else if (type === 'tulip') {
+                flower.innerHTML = `
+                    <div class="petals" style="background-color:${color}; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; width: 40px; height: 60px;"></div>
+                    <div class="stem"></div>
+                `;
+            } else if (type === 'daisy') {
+                flower.innerHTML = `
+                    <div class="petals" style="background: radial-gradient(circle, white 0%, white 40%, ${color} 40%); border: 3px solid ${color}; border-radius: 50%; width: 50px; height: 50px;"></div>
+                    <div class="stem"></div>
+                `;
+            }
 
-        vase.appendChild(flower);
+            flower.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('id', flower.id);
+            });
 
-        // Ajouter une photo au montage
-        if (photoCount < photoUrls.length) {
-            const photoUrl = photoUrls[photoCount];
-            const photo = document.createElement('img');
-            photo.src = photoUrl;
-            photo.className = 'montage-photo';
-            photoMontage.appendChild(photo);
-            photoCount++;
+            container.appendChild(flower);
         }
 
-        if (vase.children.length >= 5) {
-            message.style.display = 'block';
+        function allowDrop(event) {
+            event.preventDefault();
+            vase.classList.add('hover');
         }
-    }
-</script>
+
+        function dropFlower(event) {
+            event.preventDefault();
+            vase.classList.remove('hover');
+
+            const id = event.dataTransfer.getData('id');
+            const flower = document.getElementById(id);
+
+            // Positionner la fleur dans le vase
+            flower.style.position = 'absolute';
+            flower.style.left = (40 + Math.random() * 20) + '%';
+            flower.style.top = (20 + Math.random() * 20) + 'px';
+            flower.style.transform = 'translateX(-50%) scale(0.7)';
+            flower.style.zIndex = '1';
+            flower.draggable = false;
+
+            vase.appendChild(flower);
+
+            // Ajouter une photo au montage
+            if (photoCount < photoUrls.length) {
+                const photoUrl = photoUrls[photoCount];
+                const photo = document.createElement('img');
+                photo.src = photoUrl;
+                photo.className = 'montage-photo';
+                photoMontage.appendChild(photo);
+                photoCount++;
+            }
+
+            if (vase.children.length >= 5) {
+                message.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
