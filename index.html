@@ -75,9 +75,10 @@
             width: 3px;
             height: 80px;
             background-color: #2ecc71;
-            bottom: 0;
+            bottom: 0; /* Tige commence en bas */
             left: 50%;
             transform: translateX(-50%);
+            z-index: 1;
         }
 
         .petals {
@@ -85,9 +86,10 @@
             width: 50px;
             height: 30px;
             border-radius: 50% 50% 0 0;
-            top: 0;
+            bottom: 80px; /* Pétales au-dessus de la tige */
             left: 50%;
             transform: translateX(-50%);
+            z-index: 2;
         }
 
         .message {
@@ -188,8 +190,8 @@
             const color = colors[Math.floor(Math.random() * colors.length)];
 
             flower.innerHTML = `
-                <div class="petals" style="background-color:${color};"></div>
                 <div class="stem"></div>
+                <div class="petals" style="background-color:${color};"></div>
             `;
 
             flower.addEventListener('dragstart', e => {
