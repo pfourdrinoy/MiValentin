@@ -7,7 +7,7 @@
 
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #fce4ec;
             display: flex;
             justify-content: center;
@@ -22,16 +22,17 @@
             position: relative;
             width: 100%;
             max-width: 600px;
-            height: 500px;
+            height: 520px;
         }
 
         h1 {
             color: #c2185b;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         p {
             color: #795548;
+            margin-bottom: 10px;
         }
 
         button {
@@ -97,7 +98,7 @@
         /* 💖 Cœur */
         #heart-container {
             position: absolute;
-            top: 80px;
+            top: 90px;
             left: 50%;
             transform: translateX(-50%);
             width: 300px;
@@ -120,7 +121,6 @@
         #heart-photo-3 { bottom: 30px; left: 10%; }
         #heart-photo-4 { bottom: 30px; right: 10%; }
         #heart-photo-5 { bottom: 0; left: 50%; transform: translateX(-50%); }
-
     </style>
 </head>
 
@@ -156,13 +156,14 @@
     let flowerCount = 0;
     let photoCount = 0;
 
+    // 📸 PHOTOS À LA RACINE DU REPO
     const photoUrls = [
-        "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo1.jpg",
-        "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo2.jpg",
-        "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo3.jpg",
-        "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo4.jpg",
-        "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo5.jpg",
-        "https://raw.githubusercontent.com/pfourdrinoy/MiValentin/main/photo6.jpg"
+        "photo1.jpg",
+        "photo2.jpg",
+        "photo3.jpg",
+        "photo4.jpg",
+        "photo5.jpg",
+        "photo6.jpg"
     ];
 
     spawnBtn.addEventListener('click', () => {
@@ -177,7 +178,7 @@
         flower.id = 'flower-' + flowerCount++;
 
         flower.style.left = Math.random() * 80 + '%';
-        flower.style.top = Math.random() * 200 + 120 + 'px';
+        flower.style.top = Math.random() * 180 + 130 + 'px';
 
         const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b'];
         const color = colors[Math.floor(Math.random() * colors.length)];
@@ -208,25 +209,3 @@
 
         flower.style.left = '50%';
         flower.style.top = '40px';
-        flower.style.transform = 'translateX(-50%) scale(0.8)';
-        flower.draggable = false;
-
-        vase.appendChild(flower);
-
-        if (photoCount < photoUrls.length) {
-            const photo = document.createElement('img');
-            photo.src = photoUrls[photoCount];
-            photo.className = 'heart-photo';
-            photo.id = 'heart-photo-' + photoCount;
-            heartContainer.appendChild(photo);
-            photoCount++;
-        }
-
-        if (vase.children.length >= 5) {
-            message.style.display = 'block';
-        }
-    }
-</script>
-
-</body>
-</html>
