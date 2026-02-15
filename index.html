@@ -63,31 +63,31 @@
             background-color: #9b59b6;
         }
 
-        .heart {
+        .flower {
             position: absolute;
             cursor: grab;
             z-index: 5;
-            width: 40px;
-            height: 40px;
-            transition: transform 0.5s ease, opacity 0.5s ease;
+            transition: all 0.5s ease;
         }
 
-        .heart::before,
-        .heart::after {
-            content: '';
+        .stem {
             position: absolute;
-            width: 20px;
-            height: 30px;
-            background-color: inherit;
-            border-radius: 20px 20px 0 0;
-            transform: rotate(-45deg);
-            transform-origin: 0 100%;
+            width: 3px;
+            height: 80px;
+            background-color: #2ecc71;
+            bottom: 0;
+            left: 50%;
+            transform-origin: center bottom;
         }
 
-        .heart::after {
-            transform: rotate(45deg);
-            transform-origin: 100% 100%;
-            left: 20px;
+        .petals {
+            position: absolute;
+            width: 50px;
+            height: 30px;
+            border-radius: 50% 50% 0 0;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .message {
@@ -135,12 +135,12 @@
 <body>
     <div class="container">
         <h1>Ton Bouquet de Saint-Valentin</h1>
-        <p>Attrape les cœurs et mets-les dans le vase 💖</p>
-        <button id="spawnHearts">💖 Faire apparaître les cœurs</button>
-        <div class="vase" id="vase" ondragover="allowDrop(event)" ondrop="dropHeart(event)"></div>
+        <p>Attrape les fleurs et mets-les dans le vase 💐</p>
+        <button id="spawnFlowers">🌸 Faire apparaître les fleurs</button>
+        <div class="vase" id="vase" ondragover="allowDrop(event)" ondrop="dropFlower(event)"></div>
         <div class="message" id="message">
             Joyeuse Saint-Valentin, [Son Prénom] 💖<br>
-            Chaque cœur est un souvenir avec toi.
+            Chaque fleur est un souvenir avec toi.
         </div>
     </div>
 
@@ -148,13 +148,14 @@
 
     <script>
         const container = document.querySelector('.container');
-        const spawnBtn = document.getElementById('spawnHearts');
+        const spawnBtn = document.getElementById('spawnFlowers');
         const vase = document.getElementById('vase');
         const message = document.getElementById('message');
         const photoMontage = document.getElementById('photo-montage');
 
-        let heartCount = 0;
+        let flowerCount = 0;
         let photoCount = 0;
+        let flowersInVase = 0;
 
         const photoUrls = [
             "photos1.jpg",
@@ -168,30 +169,37 @@
         spawnBtn.addEventListener('click', () => {
             spawnBtn.style.display = 'none';
             for (let i = 0; i < 6; i++) {
-                createHeart();
+                createFlower();
             }
         });
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.draggable = true;
-            heart.id = 'heart-' + heartCount++;
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.draggable = true;
+            flower.id = 'flower-' + flowerCount++;
 
             // Position aléatoire
-            heart.style.left = Math.random() * 80 + '%';
-            heart.style.top = Math.random() * 200 + 100 + 'px';
+            flower.style.left = Math.random() * 80 + '%';
+            flower.style.top = Math.random() * 200 + 100 + 'px';
 
             // Couleur aléatoire
             const colors = ['#e91e63', '#ff5252', '#ff80ab', '#ff4081', '#c2185b', '#ffeb3b', '#ffc107'];
             const color = colors[Math.floor(Math.random() * colors.length)];
-            heart.style.backgroundColor = color;
 
-            heart.addEventListener('dragstart', e => {
-                e.dataTransfer.setData('id', heart.id);
+            // Taille aléatoire
+            const scale = 0.8 + Math.random() * 0.4;
+
+            flower.innerHTML = `
+                <div class="petals" style="background-color:${color}; width:${50 * scale}px; height:${30 * scale}px;"></div>
+                <div class="stem" style="height:${80 * scale}px; transform: rotate(${Math.random() * 20 - 10}deg);"></div>
+            `;
+
+            flower.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('id', flower.id);
             });
 
-            container.appendChild(heart);
+            container.appendChild(flower);
         }
 
         function allowDrop(event) {
@@ -199,26 +207,27 @@
             vase.classList.add('hover');
         }
 
-        function dropHeart(event) {
+        function dropFlower(event) {
             event.preventDefault();
             vase.classList.remove('hover');
 
             const id = event.dataTransfer.getData('id');
-            const heart = document.getElementById(id);
+            const flower = document.getElementById(id);
 
-            // Position aléatoire dans le vase
-            const randomX = 20 + Math.random() * 60;
-            const randomY = 10 + Math.random() * 30;
-            const randomScale = 0.5 + Math.random() * 0.5;
+            // Position réaliste dans le vase
+            const angle = Math.random() * 30 - 15; // Angle aléatoire pour la tige
+            const offsetX = Math.random() * 40 - 20; // Décalage horizontal aléatoire
+            const heightInVase = 30 + Math.random() * 50; // Hauteur aléatoire dans le vase
 
-            heart.style.position = 'absolute';
-            heart.style.left = randomX + '%';
-            heart.style.top = randomY + 'px';
-            heart.style.transform = `translateX(-50%) scale(${randomScale})`;
-            heart.style.zIndex = '1';
-            heart.draggable = false;
+            flower.style.position = 'absolute';
+            flower.style.left = `calc(50% + ${offsetX}px)`;
+            flower.style.bottom = `${heightInVase}px`;
+            flower.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+            flower.style.zIndex = '1';
+            flower.draggable = false;
 
-            vase.appendChild(heart);
+            vase.appendChild(flower);
+            flowersInVase++;
 
             // Ajouter une photo au montage
             if (photoCount < photoUrls.length) {
@@ -230,7 +239,7 @@
                 photoCount++;
             }
 
-            if (vase.children.length >= 5) {
+            if (flowersInVase >= 5) {
                 message.style.display = 'block';
             }
         }
